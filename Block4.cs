@@ -24,28 +24,22 @@ namespace Labas_5
             this.height = height;
             this.width = width;
         }
-        public void Draw()
+        public void DrawBoard()
         {
-            g.Clear(Color.White);
-            g.DrawImage(hammerTexture, 280,-100);
-            g.DrawImage(nailTexture, 280,155);
-            g.DrawImage(woodPlankTexture, 150,250);
+            g.DrawImage(woodPlankTexture, 0,315);
         }
 
-        public void DrawHammer(int step)
+        public void DrawHammerBottom(int stepX, int stepY)
         {
-            g.DrawImage(hammerTexture, 280, step-80);
+            g.DrawImage(hammerTexture, stepX, stepY);
         }
-
+        public void DrawHammerTop(int stepTop)
+        {
+            g.DrawImage(hammerTexture, 50, stepTop);
+        }
         public void DrawNail(int step)
         {
-            g.DrawImage(nailTexture, 280, step+80);
+            g.DrawImage(nailTexture, 50, step);
         }
-
-
-
-
-
-
     }
 }

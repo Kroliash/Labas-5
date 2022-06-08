@@ -18,19 +18,18 @@ namespace Labas_5
         public Graphics g;
         public Bitmap bitmap;
         Stopwatch swTimeSinceStart;
-        int frameSinceStart;
         Block1 block1;
         Block2 block2;
         Block3 block3;
         Block4 block4;
         int degrees;
         int framesSinceStart;
-        int framesSinceStart2;
         Stopwatch timeSinceStart1;
         Stopwatch timeSinceStart2;
         int a;
         int padding;
-        int stepForHammer;
+        int stepForHammerBottom;
+        int stepForHammerTop;
         int stepForNail;
 
 
@@ -51,6 +50,8 @@ namespace Labas_5
 
         private void Block1_Click(object sender, EventArgs e)
         {
+            timer1.Stop();
+            timer2.Stop();
             Canvas.Image = bitmap;
             block1.Draw();
         }
@@ -58,7 +59,8 @@ namespace Labas_5
 
         private void Block2_Click(object sender, EventArgs e)
         {
-            timer1.Stop(); 
+            timer1.Stop();
+            timer2.Stop();
             Canvas.Image = bitmap;
             g.ResetTransform();
             block2.Draw();
@@ -77,7 +79,12 @@ namespace Labas_5
 
         private void Block4_Click(object sender, EventArgs e)
         {
+            timer1.Stop();
             g.Clear(Color.White);
+            padding = 40;
+            stepForHammerBottom = 0;
+            stepForHammerTop = 100;
+            stepForNail = 0;
             a = 0;
             Canvas.Image = bitmap;
             framesSinceStart = 0;
@@ -106,30 +113,39 @@ namespace Labas_5
         {
             g.Clear(Color.White);
             Canvas.Image = bitmap;
-            if (stepForHammer < 100 + padding)
+            framesSinceStart++;
+            double tms = timeSinceStart2.ElapsedMilliseconds;
+            label2.Text = $"Interval:{timer2.Interval}\n{tms} ms\n{framesSinceStart} frames({Math.Round((framesSinceStart * 1000 / tms), 2)} fps)";
+            block4.DrawNail(238 + stepForNail); //цвях
+            block4.DrawBoard(); //малює дошку
+            if (stepForHammerBottom < 100 + padding) //молоток опускається
             {
-                stepForHammer += 5;
-                block4.DrawHammer(stepForHammer);
-            }
-            if (stepForNail > 0 && stepForHammer == 100 + padding)
-            {
-                stepForNail -= 5;
-                block4.DrawHammer(stepForNail);
-            }
-
-            if (stepForHammer == 100 + padding && stepForNail == 0)
-            {
-                stepForNail = 100 + padding;
-                stepForHammer = 0;
-                padding += 50;
+                stepForHammerBottom += 5;
+                block4.DrawHammerBottom(50, -152+stepForHammerBottom);
             }
 
-            if (stepForHammer == 100 + padding)
+            if (stepForHammerTop > 0 && stepForHammerBottom == 100 + padding) //піднімання вверх молотка
             {
-                a += 1;
+                stepForHammerTop -= 5;
+                block4.DrawHammerTop(stepForHammerTop-170);
             }
 
-            block4.DrawNail(a + 200);
+            if (stepForHammerTop == 0 && stepForHammerBottom == 100 + padding) //додавання відступу для молотка
+            {
+                stepForHammerTop = 100 + padding;
+                stepForHammerBottom = 0;
+                padding += 25;
+            }
+
+            if (stepForHammerBottom == 100 + padding) //відступ для цвяха
+            {
+                stepForNail += 1;
+            }
+
+            if (100+padding >= 200) //зупинитися коли цвях забитий
+            {
+                timer2.Stop();
+            }
         }
     }
 }
